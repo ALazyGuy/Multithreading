@@ -1,13 +1,12 @@
 package com.ltp.multithreading.entity;
 
 import com.ltp.multithreading.entity.state.CarState;
+import com.ltp.multithreading.entity.state.WaitingState;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Setter;
 
 @Data
-@AllArgsConstructor
 public class Car {
 
     @Setter(AccessLevel.NONE)
@@ -15,6 +14,13 @@ public class Car {
     private int weight;
     private String number;
     private CarState carState;
+
+    public Car(int id, int weight, String number){
+        this.id = id;
+        this.weight = weight;
+        this.number = number;
+        this.carState = new WaitingState();
+    }
 
     @Override
     public int hashCode(){
