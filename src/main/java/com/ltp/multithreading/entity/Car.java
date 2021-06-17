@@ -6,8 +6,11 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
+
 @Data
-public class Car {
+public class Car implements Callable<Car> {
 
     @Setter(AccessLevel.NONE)
     private int id;
@@ -20,6 +23,24 @@ public class Car {
         this.weight = weight;
         this.number = number;
         this.carState = new WaitingState();
+    }
+
+    @Override
+    public Car call() throws Exception {
+        TransportingQueue.getInstance().addCar(this);
+        TransportingQueue.getInstance().count();
+        while (true){
+            if(carState instanceof WaitingState){
+                continue;
+            }
+
+            TimeUnit.SECONDS.sleep(1);
+            TransportingQueue.getInstance().transport(this);
+
+            break;
+        }
+
+        return this;
     }
 
     @Override
